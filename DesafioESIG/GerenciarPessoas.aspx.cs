@@ -1,6 +1,5 @@
 ﻿//using System.Data.SqlClient;
 using Oracle.ManagedDataAccess.Client;
-using Oracle.ManagedDataAccess.Types;
 using System;
 using System.Configuration;
 using System.Web.UI;
@@ -66,16 +65,34 @@ namespace DesafioESIG
             }
         }
 
+        protected void BtnBuscarPessoa_Click(object sender, EventArgs e)
+        {
+            string termo = txtBuscaPessoa.Text.Trim().ToUpper();
+
+            SqlDataSourcePessoa.SelectParameters.Clear();
+
+            if (string.IsNullOrWhiteSpace(termo))
+            {
+                SqlDataSourcePessoa.SelectCommand = "SELECT * FROM pessoa";
+            }
+            else
+            {
+                //o "OR" na consulta vai buscar tanto pelo nome como email, caso obtenha algum resultado ele retorna
+                SqlDataSourcePessoa.SelectCommand = "SELECT * FROM pessoa WHERE UPPER(NOME) LIKE :termo OR UPPER(EMAIL) LIKE :termo";
+                SqlDataSourcePessoa.SelectParameters.Add("termo", "%" + termo + "%");
+            }
+
+            gridPessoas.DataBind();
+        }
+
         protected void GridViewPessoas_RowEditing(object sender, GridViewEditEventArgs e)
         {
-            // Esta linha diz ao Grid para entrar no modo de edição para a linha clicada
             gridPessoas.EditIndex = e.NewEditIndex;
             gridPessoas.DataBind(); 
         }
 
         protected void GridViewPessoas_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
         {
-            // Esta linha diz ao Grid para sair do modo de edição
             gridPessoas.EditIndex = -1;
             gridPessoas.DataBind(); 
         }
@@ -96,7 +113,7 @@ namespace DesafioESIG
                 using (OracleCommand cmdFilho = new OracleCommand(deleteFilhoSql, con))
                 {
                     cmdFilho.Parameters.Add(":Id", OracleDbType.Int32).Value = Convert.ToInt32(pessoaId);
-                    cmdFilho.ExecuteNonQuery(); // <-- EXCLUI O FILHO PRIMEIRO
+                    cmdFilho.ExecuteNonQuery(); 
                 }
 
                 // 3. Crie e execute o COMANDO PARA EXCLUIR O PAI (pessoa)

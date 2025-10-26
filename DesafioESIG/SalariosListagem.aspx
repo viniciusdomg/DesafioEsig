@@ -1,18 +1,10 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SalariosListagem.aspx.cs" Inherits="DesafioESIG.SalariosListagem" Async="true" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SalariosListagem.aspx.cs" Inherits="DesafioESIG.SalariosListagem" Async="true" MasterPageFile="~/Site.Master" %>
 
-<!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Salarios</title>
-    <link href="Content/bootstrap.min.css" rel="stylesheet" />
-</head>
-<body>
-    <form id="form1" runat="server">
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    
         <div class="p-5">
             <h1>Listagem de Salários</h1>
-            <div class="d-flex justify-content-end my-4">
+            <div class="d-flex justify-content-end my-4">   
                 <asp:Button ID="btnCalcularSalarios" runat="server" Text="Calcular/Recalcular Salários" OnClick="BtnCalcularSalarios_Click" 
                     CssClass="btn btn-primary align-items-end" />
             </div>
@@ -20,10 +12,30 @@
             <asp:Label ID="lblMensagem" runat="server" ForeColor="Green"></asp:Label> <%-- Para mensagens de sucesso/status --%>
             <asp:Label ID="lblError" runat="server" ForeColor="Red"></asp:Label> <%-- Label de erro que já adicionamos --%>
 
+            <div class="d-flex justify-content-between align-items-center mb-3 gap-3">
+                <div class="d-flex gap-3 flex-grow-1">
+                    <div class="col-md-3">
+                        <asp:TextBox ID="txtBuscaNome" runat="server" CssClass="form-control" placeholder="Buscar por Nome..."></asp:TextBox>
+                    </div>
+                    <div class="col-md-6">
+                        <asp:DropDownList ID="ddlBuscaCargo" runat="server" CssClass="form-select" DataSourceID="SqlDataSourceCargo" 
+                            DataTextField="NOME" DataValueField="ID" AppendDataBoundItems="true">
+                            <asp:ListItem Text="-- Todos os Cargos --" Value=""></asp:ListItem>
+                        </asp:DropDownList>
+                        <asp:SqlDataSource ID="SqlDataSourceCargo" runat="server" ConnectionString='<%$ ConnectionStrings:ConnectionString %>' 
+                            ProviderName="Oracle.ManagedDataAccess.Client" SelectCommand='SELECT "ID", "NOME" FROM "CARGO"'></asp:SqlDataSource>
+                    </div>
+                </div>
+                <div class="">
+                    <asp:Button ID="btnBuscar" runat="server" Text="Buscar" OnClick="BtnBuscar_Click" CssClass="btn btn-secondary w-100" />
+                </div>
+            </div>
+
             <asp:GridView ID="GridViewSalarios" runat="server"
                 AutoGenerateColumns="false" 
                 CssClass="table table-striped table-bordered" 
-                EmptyDataText="Nenhum salário calculado encontrado.">
+                EmptyDataText="Nenhum salário calculado encontrado."
+                 AllowPaging="true">
                 <Columns>
                     <asp:BoundField DataField="pessoa_id" HeaderText="ID Pessoa" />
                     <asp:BoundField DataField="pessoa_nome" HeaderText="Nome Pessoa" />
@@ -33,6 +45,5 @@
             </asp:GridView>
 
         </div>
-    </form>
-</body>
-</html>
+        
+</asp:Content>

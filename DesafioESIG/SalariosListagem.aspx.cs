@@ -16,16 +16,45 @@ namespace DesafioESIG
             }
         }
 
-        private void BindGrid()
+        private void BindGrid(string filtroNome = null, string filtroCargoId = null)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             DataTable dt = new DataTable();
 
             using (OracleConnection con = new OracleConnection(connectionString))
             {
-                string query = "SELECT pessoa_id, pessoa_nome, cargo_nome, salario FROM pessoa_salario ORDER BY pessoa_nome";
+                string query = "SELECT pessoa_id, pessoa_nome, cargo_nome, salario FROM pessoa_salario ";
+
+                var conditions = new System.Collections.Generic.List<string>();
+
                 using (OracleCommand cmd = new OracleCommand(query, con))
                 {
+                    if (!string.IsNullOrWhiteSpace(filtroNome))
+                    {
+                        conditions.Add("UPPER(pessoa_nome) LIKE :filtroNome");
+                        cmd.Parameters.Add(":filtroNome", "%" + filtroNome.ToUpper() + "%");
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(filtroCargoId))
+                    {
+                        conditions.Add("UPPER(cargo_nome) LIKE :filtroCargoNome");
+                        string cargoNome = ddlBuscaCargo.SelectedItem.Text;
+                        if (ddlBuscaCargo.SelectedValue != "")
+                        {
+                            cmd.Parameters.Add(":filtroCargoNome", "%" + cargoNome.ToUpper() + "%");
+                        }
+                    }
+
+                    if (conditions.Count > 0)
+                    {
+                        query += " WHERE " + string.Join(" AND ", conditions);
+                    }
+
+                    query += " ORDER BY pessoa_nome";
+
+                    cmd.CommandText = query;
+                    cmd.Connection = con;
+
                     try
                     {
                         con.Open();
@@ -39,8 +68,7 @@ namespace DesafioESIG
                     {
                         // TODO: Tratar o erro de forma mais robusta (ex: exibir mensagem amigável)
                         Console.WriteLine("Erro ao buscar dados: " + ex.Message);
-                        // Você pode adicionar um controle Label na página .aspx para mostrar erros
-                        // lblErro.Text = "Erro ao carregar dados: " + ex.Message;
+
                     }
                 }
             }
@@ -48,6 +76,11 @@ namespace DesafioESIG
 
             GridViewSalarios.DataSource = dt;
             GridViewSalarios.DataBind(); 
+        }
+
+        protected void BtnBuscar_Click(object sender, EventArgs e)
+        {
+            BindGrid(txtBuscaNome.Text, ddlBuscaCargo.SelectedValue);
         }
 
         protected async void BtnCalcularSalarios_Click(object sender, EventArgs e)
