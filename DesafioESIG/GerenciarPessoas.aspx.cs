@@ -131,7 +131,9 @@ namespace DesafioESIG
 
             string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             // Crie seu comando UPDATE com os parâmetros :
-            string updateSql = "UPDATE pessoa SET NOME = :Nome, CIDADE = :Cidade /*... adicione TODOS os campos ...*/ WHERE ID = :Id";
+            string updateSql = @"UPDATE pessoa SET NOME = :Nome, CIDADE = :Cidade, EMAIL = :Email, CEP = :Cep, 
+                ENDERCO = :Enderco, PAIS = :Pais, USUARIO = :Usuario, TELEFONE = :Telefone, DATA_NASCIMENTO = :DataNascimento, CARGO_ID = :CargoID 
+                WHERE ID = :Id";
 
             using (OracleConnection con = new OracleConnection(connectionString))
             {
@@ -139,7 +141,23 @@ namespace DesafioESIG
                 {
                     cmd.Parameters.Add(":Nome", OracleDbType.Varchar2).Value = txtNomeGrid.Text;
                     cmd.Parameters.Add(":Cidade", OracleDbType.Varchar2).Value = txtCidadeGrid.Text;
-                    // ... Adicione os parâmetros para TODOS os seus campos (CEP, EMAIL, etc.) ...
+                    cmd.Parameters.Add(":Email", OracleDbType.Varchar2).Value = txtEmail.Text;
+                    cmd.Parameters.Add(":Cep", OracleDbType.Varchar2).Value = txtCep.Text;
+                    cmd.Parameters.Add(":Enderco", OracleDbType.Varchar2).Value = txtEndereco.Text;
+                    cmd.Parameters.Add(":Pais", OracleDbType.Varchar2).Value = txtPais.Text;
+                    cmd.Parameters.Add(":Usuario", OracleDbType.Varchar2).Value = txtUsuario.Text;
+                    cmd.Parameters.Add(":Telefone", OracleDbType.Varchar2).Value = txtTelefone.Text;
+
+                    if (DateTime.TryParse(txtDataNascimento.Text, out DateTime dataNasc))
+                    {
+                        cmd.Parameters.Add(":DataNascimento", OracleDbType.Date).Value = dataNasc;
+                    }
+                    else
+                    {
+                        cmd.Parameters.Add(":DataNascimento", OracleDbType.Date).Value = DBNull.Value;
+                    }
+
+                    cmd.Parameters.Add(":CargoID", OracleDbType.Int32).Value = Convert.ToInt32(ddlCargo.SelectedValue);
 
                     cmd.Parameters.Add(":Id", OracleDbType.Int32).Value = Convert.ToInt32(pessoaId);
 
