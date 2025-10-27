@@ -35,13 +35,17 @@
                 AutoGenerateColumns="false" 
                 CssClass="table table-striped table-bordered" 
                 EmptyDataText="Nenhum salário calculado encontrado."
-                 AllowPaging="true">
+                AllowPaging="true"
+                PageSize="10"
+                OnPageIndexChanging="GridViewSalarios_PageIndexChanging">
                 <Columns>
                     <asp:BoundField DataField="pessoa_id" HeaderText="ID Pessoa" />
                     <asp:BoundField DataField="pessoa_nome" HeaderText="Nome Pessoa" />
                     <asp:BoundField DataField="cargo_nome" HeaderText="Cargo" />
                     <asp:BoundField DataField="salario" HeaderText="Salário" DataFormatString="{0:C}" /> <%-- Formata como moeda --%>
                 </Columns>
+                <PagerStyle CssClass="pagination-ys" HorizontalAlign="Center" />
+                <PagerSettings Mode="NumericFirstLast" PageButtonCount="5" FirstPageText="Primeira" LastPageText="Última" />
             </asp:GridView>
 
         </div>

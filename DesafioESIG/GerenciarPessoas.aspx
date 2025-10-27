@@ -76,15 +76,45 @@
             </div>
 
             <asp:GridView ID="gridPessoas" runat="server" DataSourceID="SqlDataSourcePessoa" DataKeyNames="ID"
-                CssClass="table table-striped table-bordered" 
-                AllowPaging="True" AllowSorting="True" 
+                CssClass="table table-striped table-bordered"
+                AllowPaging="True"
+                PageSize="10"
+                AllowSorting="True"
                 OnRowEditing="GridViewPessoas_RowEditing"
                 OnRowCancelingEdit="GridViewPessoas_RowCancelingEdit"
-                OnRowUpdating="GridViewPessoas_RowUpdating" 
-                OnRowDeleting="GridViewPessoas_RowDeleting">
+                OnRowUpdating="GridViewPessoas_RowUpdating"
+                OnRowDeleting="GridViewPessoas_RowDeleting"
+                OnPageIndexChanging="GridPessoas_PageIndexChanging">
                 <Columns>
-                    <asp:CommandField ShowCancelButton="True" ShowEditButton="True" ShowDeleteButton="True"></asp:CommandField>
+                    <asp:TemplateField HeaderText="Ações" ItemStyle-HorizontalAlign="Center">
+                        <ItemTemplate>
+                            <asp:LinkButton ID="lnkEdit" runat="server" CommandName="Edit" 
+                                CssClass="btn btn-sm btn-warning me-1 m-2" ToolTip="Editar">
+                                Editar
+                            </asp:LinkButton>
+                            <asp:LinkButton ID="lnkDelete" runat="server" CommandName="Delete" 
+                                CssClass="btn btn-sm btn-danger" ToolTip="Excluir"
+                                OnClientClick="return confirm('Tem certeza que deseja excluir esta pessoa?');"> 
+                                
+                                Excluir
+                            </asp:LinkButton>
+                        </ItemTemplate>
+                        <EditItemTemplate>
+                            <asp:LinkButton ID="lnkUpdate" runat="server" CommandName="Update" 
+                                CssClass="btn btn-sm btn-success me-1 m-2" ToolTip="Salvar">
+                                Salvar
+                            </asp:LinkButton>
+                            <asp:LinkButton ID="lnkCancel" runat="server" CommandName="Cancel" 
+                                CssClass="btn btn-sm btn-secondary" ToolTip="Cancelar">
+                                Cancelar
+                            </asp:LinkButton>
+                        </EditItemTemplate>
+                        <ItemStyle HorizontalAlign="Center" Width="150px" /> 
+                    </asp:TemplateField>
                 </Columns>
+
+                <PagerStyle CssClass="pagination-ys" HorizontalAlign="Center" />
+                <PagerSettings Mode="NumericFirstLast" PageButtonCount="5" FirstPageText="Primeira" LastPageText="Última" />
             </asp:GridView>
 
             <asp:SqlDataSource ID="SqlDataSourcePessoa" runat="server" 

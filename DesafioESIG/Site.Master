@@ -52,6 +52,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="GerenciarPessoas.aspx">Gerenciar Pessoas</a>
                         </li>
+                         <%--
+                        <li class="nav-item">
+                            <a class="nav-link" href="Relatorio.aspx">Relatório</a>
+                        </li>
+                        --%>
                     </ul>
                 </div>
             </div>

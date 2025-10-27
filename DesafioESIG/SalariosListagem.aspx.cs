@@ -1,8 +1,9 @@
-﻿using System;
-using System.Data; 
-using Oracle.ManagedDataAccess.Client; 
+﻿using Oracle.ManagedDataAccess.Client; 
+using System;
 using System.Configuration;
+using System.Data; 
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 
 namespace DesafioESIG
 {
@@ -58,7 +59,6 @@ namespace DesafioESIG
                     try
                     {
                         con.Open();
-                        // Usa OracleDataAdapter para preencher um DataTable
                         using (OracleDataAdapter da = new OracleDataAdapter(cmd))
                         {
                             da.Fill(dt);
@@ -75,7 +75,14 @@ namespace DesafioESIG
 
 
             GridViewSalarios.DataSource = dt;
-            GridViewSalarios.DataBind(); 
+            GridViewSalarios.DataBind();
+        }
+
+        protected void GridViewSalarios_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GridViewSalarios.PageIndex = e.NewPageIndex;
+
+            BindGrid(txtBuscaNome.Text, ddlBuscaCargo.SelectedValue);
         }
 
         protected void BtnBuscar_Click(object sender, EventArgs e)

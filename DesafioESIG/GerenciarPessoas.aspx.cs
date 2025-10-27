@@ -55,7 +55,7 @@ namespace DesafioESIG
                         // Limpa os campos e atualiza o Grid
                         // (coloque aqui seu código para limpar os textboxes)
 
-                        gridPessoas.DataBind(); // ID do seu GridView
+                        gridPessoas.DataBind(); 
                     }
                     catch (Exception ex)
                     {
@@ -63,6 +63,13 @@ namespace DesafioESIG
                     }
                 }
             }
+        }
+
+        protected void GridPessoas_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gridPessoas.PageIndex = e.NewPageIndex;
+
+            BtnBuscarPessoa_Click(sender, e); 
         }
 
         protected void BtnBuscarPessoa_Click(object sender, EventArgs e)
@@ -109,14 +116,12 @@ namespace DesafioESIG
             {
                 con.Open(); 
 
-                // 2. Crie e execute o COMANDO PARA EXCLUIR O FILHO (pessoa_salario)
                 using (OracleCommand cmdFilho = new OracleCommand(deleteFilhoSql, con))
                 {
                     cmdFilho.Parameters.Add(":Id", OracleDbType.Int32).Value = Convert.ToInt32(pessoaId);
                     cmdFilho.ExecuteNonQuery(); 
                 }
 
-                // 3. Crie e execute o COMANDO PARA EXCLUIR O PAI (pessoa)
                 using (OracleCommand cmdPai = new OracleCommand(deletePaiSql, con))
                 {
                     cmdPai.Parameters.Add(":Id", OracleDbType.Int32).Value = Convert.ToInt32(pessoaId);
@@ -124,16 +129,13 @@ namespace DesafioESIG
                 }
             } 
 
-            // Diz ao GridView que já cuidamos da exclusão
             e.Cancel = true;
 
-            // Atualiza o Grid
             gridPessoas.DataBind();
         }
 
         protected void GridViewPessoas_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
-            // Pega o ID da linha que está sendo editada
             string pessoaId = gridPessoas.DataKeys[e.RowIndex].Value.ToString();
 
             // Pega os novos valores das TextBoxes da linha
@@ -144,10 +146,9 @@ namespace DesafioESIG
             // Se você estiver usando BoundField, o ID pode ser "TextBox2" para a segunda coluna (NOME)
             TextBox txtNomeGrid = gridPessoas.Rows[e.RowIndex].Cells[2].Controls[0] as TextBox;
             TextBox txtCidadeGrid = gridPessoas.Rows[e.RowIndex].Cells[3].Controls[0] as TextBox;
-            // ... e assim por diante para todas as colunas
 
             string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-            // Crie seu comando UPDATE com os parâmetros :
+
             string updateSql = @"UPDATE pessoa SET NOME = :Nome, CIDADE = :Cidade, EMAIL = :Email, CEP = :Cep, 
                 ENDERCO = :Enderco, PAIS = :Pais, USUARIO = :Usuario, TELEFONE = :Telefone, DATA_NASCIMENTO = :DataNascimento, CARGO_ID = :CargoID 
                 WHERE ID = :Id";
@@ -183,7 +184,6 @@ namespace DesafioESIG
                 }
             }
 
-            // Sai do modo de edição e atualiza o Grid
             gridPessoas.EditIndex = -1;
             e.Cancel = true;
             gridPessoas.DataBind();
