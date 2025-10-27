@@ -109,18 +109,19 @@ namespace DesafioESIG
                         await cmd.ExecuteNonQueryAsync(); 
                         lblMensagem.Text = "Salários calculados/recalculados com sucesso!";
 
-                        // MUITO IMPORTANTE: Atualiza o GridView após a execução da procedure
-                        BindGrid();
+                        Response.Redirect(Request.RawUrl, false);
                     }
                     catch (OracleException oraEx)
                     {
                         lblError.Text = $"Erro Oracle ao calcular salários: {oraEx.Message} (Erro Oracle #: {oraEx.Number})";
                         System.Diagnostics.Debug.WriteLine($"Erro Oracle ao calcular: {oraEx.Message} (Erro#: {oraEx.Number})");
+                        BindGrid();
                     }
                     catch (Exception ex)
                     {
                         lblError.Text = "Erro geral ao calcular salários: " + ex.Message;
                         System.Diagnostics.Debug.WriteLine("Erro geral ao calcular: " + ex.Message);
+                        BindGrid();
                     }
                 }
             }
