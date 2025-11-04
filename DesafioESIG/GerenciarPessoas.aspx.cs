@@ -52,8 +52,6 @@ namespace DesafioESIG
                         con.Open();
                         cmd.ExecuteNonQuery();
 
-                        // Limpa os campos e atualiza o Grid
-                        // (coloque aqui seu código para limpar os textboxes)
 
                         gridPessoas.DataBind(); 
                     }
@@ -139,11 +137,7 @@ namespace DesafioESIG
             string pessoaId = gridPessoas.DataKeys[e.RowIndex].Value.ToString();
 
             // Pega os novos valores das TextBoxes da linha
-            // IMPORTANTE: O 'FindControl' é sensível ao nome. O GridView geralmente 
-            // coloca os BoundFields em TextBoxes com o ID "TextBox1", "TextBox2", etc.
-            // É *MUITO MELHOR* usar TemplateFields.
-
-            // Se você estiver usando BoundField, o ID pode ser "TextBox2" para a segunda coluna (NOME)
+            
             TextBox txtNomeGrid = gridPessoas.Rows[e.RowIndex].Cells[2].Controls[0] as TextBox;
             TextBox txtCidadeGrid = gridPessoas.Rows[e.RowIndex].Cells[3].Controls[0] as TextBox;
 
